@@ -1,10 +1,32 @@
-	pipeline {
-        agent any
-        stages {
-            stage('Test') {
-                steps {
-                    echo 'Hello World 2023'
-                }
-            }
+pipeline {
+    agent any
+    stages {
+      stage('Build') {
+        steps {
+          git branch: 'main', url: '*************************************************'
         }
-    }
+      }
+      stage('Test') {
+        steps {
+          echo 'Testing using Robot Framework'
+          sh 'robot test.robot'
+        }
+      }
+      stage('Deploy') {
+        steps {
+         sh 'git checkout pre-prod'
+         sh 'git merge main'
+         sh 'git add .'
+         sh 'git config --global user.email "alena_drevina@epam.com"'
+         sh 'git config --global user.name "admin"'
+         sh 'git commit -m "comment"'
+         sh 'git push'         
+        }
+      }
+      stage('Monitor') {
+     steps {
+       echo 'Well done!'
+     }
+   }
+    }    
+  }
